@@ -16,7 +16,7 @@ import { deleteProduct } from './actions';
 export function Product({ product }: { product: SelectProduct }) {
   return (
     <TableRow>
-      <TableCell className="hidden sm:table-cell">
+      {/* <TableCell className="hidden sm:table-cell">
         <Image
           alt="Product image"
           className="aspect-square rounded-md object-cover"
@@ -24,18 +24,22 @@ export function Product({ product }: { product: SelectProduct }) {
           src={product.imageUrl}
           width="64"
         />
-      </TableCell>
+      </TableCell> */}
       <TableCell className="font-medium">{product.name}</TableCell>
-      <TableCell>
+      <TableCell className="font-medium">{product.id}</TableCell>
+      <TableCell className="font-medium">{product.doctor_id}</TableCell>
+      <TableCell className="font-medium">{product.license_id}</TableCell>
+      {/* <TableCell>
         <Badge variant="outline" className="capitalize">
           {product.status}
         </Badge>
-      </TableCell>
-      <TableCell className="hidden md:table-cell">{`$${product.price}`}</TableCell>
-      <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
-      <TableCell className="hidden md:table-cell">
+      </TableCell> */}
+      {/* <TableCell className="hidden md:table-cell">{`$${product.price}`}</TableCell> */}
+      <TableCell className="hidden md:table-cell">{product.specialty}</TableCell>
+      <TableCell className="hidden md:table-cell">{product.location}</TableCell>
+      {/* <TableCell className="hidden md:table-cell">
         {product.availableAt.toLocaleDateString("en-US")}
-      </TableCell>
+      </TableCell> */}
       <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

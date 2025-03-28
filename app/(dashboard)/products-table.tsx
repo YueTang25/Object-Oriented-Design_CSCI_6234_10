@@ -44,25 +44,28 @@ export function ProductsTable({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Products</CardTitle>
+        <CardTitle>Doctors</CardTitle>
         <CardDescription>
-          Manage your products and view their sales performance.
+          Manage all Doctors and view their information.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="hidden w-[100px] sm:table-cell">
+              {/* <TableHead className="hidden w-[100px] sm:table-cell">
                 <span className="sr-only">Image</span>
-              </TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Price</TableHead>
+              </TableHead> */}
+              {/* <TableHead>Name</TableHead>
+              <TableHead>Status</TableHead> */}
+              <TableHead className="hidden md:table-cell">Doctor Name</TableHead>
+              <TableHead className="hidden md:table-cell">User ID</TableHead>
+              <TableHead className="hidden md:table-cell">Doctor ID</TableHead>
+              <TableHead className="hidden md:table-cell">License ID</TableHead>
               <TableHead className="hidden md:table-cell">
-                Total Sales
+              Specialty
               </TableHead>
-              <TableHead className="hidden md:table-cell">Created at</TableHead>
+              <TableHead className="hidden md:table-cell">Location</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
@@ -82,7 +85,7 @@ export function ProductsTable({
             <strong>
               {Math.max(0, Math.min(offset - productsPerPage, totalProducts) + 1)}-{offset}
             </strong>{' '}
-            of <strong>{totalProducts}</strong> products
+            of <strong>{totalProducts}</strong> doctors
           </div>
           <div className="flex">
             <Button
