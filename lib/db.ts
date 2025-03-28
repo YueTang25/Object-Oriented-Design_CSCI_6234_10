@@ -29,7 +29,7 @@ export const statusEnum = pgEnum('status', ['active', 'inactive', 'archived']);
 // });
 
 export const products = pgTable('doctors', {
-  name: text('name').notNull(),
+  name: text('doctor_name').notNull(),
   id: serial('id').primaryKey(),
   doctor_id: serial('doctor_id').notNull(),
   license_id: serial('license_id').notNull(),
