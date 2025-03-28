@@ -34,7 +34,7 @@ export const products = pgTable('doctors', {
   doctor_id: serial('doctor_id').notNull(),
   license_id: serial('license_id').notNull(),
   specialty: text('specialty').notNull(),
-  location: statusEnum('location').notNull()
+  location: statusEnum('doctor_location').notNull()
 });
 
 export type SelectProduct = typeof products.$inferSelect;
