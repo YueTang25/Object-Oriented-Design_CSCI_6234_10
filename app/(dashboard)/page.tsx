@@ -1,9 +1,12 @@
 import DoctorList from '@/components/ui/doctors/doctor-list';
+import { Suspense } from 'react';
 
 export default function Page() {
   return (
     <main>
-      <DoctorList />
-    </main> 
+      <Suspense fallback={<h2>Loading...</h2>}>
+        <DoctorList />
+      </Suspense>
+    </main>
   );
 }
