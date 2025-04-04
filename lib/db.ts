@@ -1,81 +1,41 @@
-import 'server-only';
-
 import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
-import {
-  pgTable,
-  text,
-  numeric,
-  integer,
-  timestamp,
-  pgEnum,
-  serial
-} from 'drizzle-orm/pg-core';
-import { count, eq, ilike } from 'drizzle-orm';
-import { createInsertSchema } from 'drizzle-zod';
 
-export const db = drizzle(neon(process.env.POSTGRES_URL!));
+export const db = neon(process.env.NEXT_PUBLIC_DATABASE_URL!);
 
-export const statusEnum = pgEnum('status', ['active', 'inactive', 'archived']);
-
-// export const products = pgTable('products', {
-//   id: serial('id').primaryKey(),
-//   imageUrl: text('image_url').notNull(),
-//   name: text('name').notNull(),
-//   status: statusEnum('status').notNull(),
-//   price: numeric('price', { precision: 10, scale: 2 }).notNull(),
-//   stock: integer('stock').notNull(),
-//   availableAt: timestamp('available_at').notNull()
-// });
-
-export const products = pgTable('doctors', {
-  name: text('doctor_name').notNull(),
-  id: serial('id').primaryKey(),
-  doctor_id: serial('doctor_id').notNull(),
-  license_id: serial('license_id').notNull(),
-  specialty: text('specialty').notNull(),
-  location: statusEnum('doctor_location').notNull()
-});
-
-export type SelectProduct = typeof products.$inferSelect;
-export const insertProductSchema = createInsertSchema(products);
-
-export async function getProducts(
-  search: string,
-  offset: number
-): Promise<{
-  products: SelectProduct[];
-  newOffset: number | null;
-  totalProducts: number;
-}> {
-  // Always search the full table, not per page
-  if (search) {
-    return {
-      products: await db
-        .select()
-        .from(products)
-        .where(ilike(products.name, `%${search}%`))
-        .limit(1000),
-      newOffset: null,
-      totalProducts: 0
-    };
+export async function getDoctors() {
+  try {
+    const data = db`
+      SELECT users.name, doctors.user_id, doctors.doctor_id, doctors.doctor_info
+      FROM doctors
+      JOIN users ON doctors.user_id = users.user_id`;
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the all doctors.');
   }
-
-  if (offset === null) {
-    return { products: [], newOffset: null, totalProducts: 0 };
-  }
-
-  let totalProducts = await db.select({ count: count() }).from(products);
-  let moreProducts = await db.select().from(products).limit(5).offset(offset);
-  let newOffset = moreProducts.length >= 5 ? offset + 5 : null;
-
-  return {
-    products: moreProducts,
-    newOffset,
-    totalProducts: totalProducts[0].count
-  };
 }
 
-export async function deleteProductById(id: number) {
-  await db.delete(products).where(eq(products.id, id));
+export async function getPatients() {
+  try {
+    const data = db`
+      SELECT users.name, patient_info.user_id, patient_info.patient_id
+      FROM patient_info
+      JOIN users ON patient_info.user_id = users.user_id`;
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the all patients.');
+  }
+}
+
+export async function getFacilities() {
+  try {
+    const data = db`
+      SELECT *
+      FROM clinics`;
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the all facilities.');
+  }
 }
