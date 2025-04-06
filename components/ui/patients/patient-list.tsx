@@ -1,29 +1,8 @@
-'use client';
-
 import { getPatients } from '@/lib/db';
-import React, { useState, useEffect } from "react";
 
-interface Patient {
-  user_id: number;
-  name: string;
-}
+export default async function PatientList() {
 
-export default function PatientList() {
-
-  const [patients, setPatients] = useState<Patient[]>([]);
-  useEffect(() => {
-    async function fetchPatients() {
-      const rawData: Record<string, any>[] = await getPatients(); // API response type
-      const formattedData: Patient[] = rawData.map((item) => ({
-        user_id: item.user_id, // Ensure field names match API response
-        name: item.name,
-      }));
-
-      setPatients(formattedData);
-    }
-
-    fetchPatients();
-  }, []);
+  const patients = await getPatients();
 
   return (
     <div className="max-w-2xl mx-auto p-6">

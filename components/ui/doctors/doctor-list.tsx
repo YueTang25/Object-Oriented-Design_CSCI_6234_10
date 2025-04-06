@@ -1,32 +1,8 @@
-'use client';
-
 import { getDoctors } from '@/lib/db';
-import React, { useState, useEffect } from "react";
 
-interface Doctor {
-  user_id: number;
-  name: string;
-  doctor_info: string;
-}
-
-export default function DoctorList() {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  useEffect(() => {
-    async function fetchDoctors() {
-      const rawData: Record<string, any>[] = await getDoctors(); // API response type
-      const formattedData: Doctor[] = rawData.map((item) => ({
-        user_id: item.user_id, // Ensure field names match API response
-        name: item.name,
-        doctor_info: item.doctor_info ?? "No info available", // Handle missing data safely
-      }));
-
-      setDoctors(formattedData);
-    }
-
-    fetchDoctors();
-  }, []);
-
-
+export default async function DoctorList() {
+  const doctors = await getDoctors();
+  
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Doctors</h1>

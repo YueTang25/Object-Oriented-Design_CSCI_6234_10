@@ -1,13 +1,10 @@
 import FacilitiesPage from '@/components/ui/facilities/facility-list';
 import { Suspense } from 'react';
-import { getFacilities } from '@/lib/db';
+import { FacilityType, getFacilities, getRooms } from '@/lib/db';
 
-export default async function Page() {
+export default async function Page(clinic_id: number) {
     const facilities = await getFacilities();
-    const rooms = [
-        { clinic_id: 1, exam_id: 1, capability: "X-Ray" },
-        { clinic_id: 2, exam_id: 2, capability: "Ultrasound" },
-    ]
+    const rooms = await getRooms(clinic_id);
     return (
         <main>
             <Suspense fallback={<h2>Loading...</h2>}>
