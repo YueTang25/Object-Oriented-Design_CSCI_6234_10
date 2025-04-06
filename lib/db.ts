@@ -1,6 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 
-export const db = neon(process.env.NEXT_PUBLIC_DATABASE_URL!);
+export const db = neon(process.env.DATABASE_URL!);
 
 export type DoctorType = {
   user_id: number;

@@ -1,7 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 import { RoomType } from '@/lib/db';
 
-export const db = neon(process.env.NEXT_PUBLIC_DATABASE_URL!);
+export const db = neon(process.env.DATABASE_URL!);
 
 export async function createRoom(room: RoomType) {
     try {
