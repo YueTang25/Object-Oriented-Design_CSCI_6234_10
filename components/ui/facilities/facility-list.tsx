@@ -1,30 +1,47 @@
 "use client";
-import FacilityRoomsModal from "@/components/ui/facilities/FacilityRoomsModal";
+import FacilityRoomsModal from "@/components/ui/facilities/facility-rooms-modal";
 import React, { useState, useEffect } from "react";
 import { FacilityType, RoomType } from '@/lib/db';
-import Link from 'next/link';
 
 export default async function FacilitiesPage({
-    facilities,
-    rooms,
+    facilities
 }: {
     facilities: FacilityType[];
-    rooms: RoomType[];
 }) {
     const [selectedFacility, setSelectedFacility] = useState<FacilityType | null>(null);
+    const [selectedrooms, setSelectedRooms] = useState<RoomType[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    const handleViewRooms = async (facility: FacilityType) => {
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/rooms/${facility.clinic_id}`);
+            const data: RoomType[] = await res.json();
+        
+            setSelectedRooms(data);
+            setSelectedFacility(facility);
+          } catch (err) {
+            console.error("Failed to fetch rooms", err);
+            setSelectedRooms([]);
+          } finally {
+            setLoading(false);
+          }
+    };
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Manage Facilities</h1>
+        
+        <div className="max-w-2xl mx-auto p-6">
+            <h1 className="text-3xl font-bold mb-6">Manage Facilities</h1>
 
             {/* Facility List */}
             <div className="space-y-4">
-                {facilities.map((facility) => (
-                    <div key={facility.clinic_id} className="border p-4 rounded-md shadow">
-                        <h2 className="text-lg font-semibold">{facility.location}</h2>
+                {facilities.map((facility, index) => (
+                    <div key={facility.clinic_id || index} className="border p-4 rounded-lg shadow-sm bg-white">
+                        <h2 className="text-xl font-semibold">clinic id: {facility.clinic_id}</h2>
+                        <p className="text-gray-600"> location: {facility.location}</p>
                         <button
                             className="mt-2 px-4 py-2 bg-black text-white rounded"
-                            onClick={() => setSelectedFacility({ clinic_id: facility.clinic_id, location: facility.location })}
+                            onClick={() => handleViewRooms(facility)}
                         >
                             Manage Rooms
                         </button>
@@ -36,7 +53,7 @@ export default async function FacilitiesPage({
             {selectedFacility && (
                 <FacilityRoomsModal
                     facility={selectedFacility}
-                    rooms={rooms}
+                    rooms={selectedrooms}
                     onClose={() => setSelectedFacility(null)}
                 />
             )}

@@ -16,7 +16,7 @@ export type FacilityType = {
 
 export type RoomType = {
   clinic_id: number;
-  exam_id: number;
+  exam_room_id: number;
   capability: string;
 };
 
@@ -64,7 +64,6 @@ export async function getRooms(clinic_id: number) {
       SELECT *
       FROM exam_rooms
       WHERE exam_rooms.clinic_id = ${clinic_id};` as RoomType[];
-      console.log('Database log:', data);
     return data;
   } catch (error) {
     console.error('Database Error:', error);

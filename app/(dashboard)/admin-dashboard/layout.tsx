@@ -25,11 +25,11 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip';
 import { Analytics } from '@vercel/analytics/react';
-import { User } from './user';
+import { User } from '../user';
 import { VercelLogo } from '@/components/icons';
-import Providers from './providers';
-import { NavItem } from './nav-item';
-import { SearchInput } from './search';
+import Providers from '../providers';
+import { NavItem } from '../nav-item';
+import { SearchInput } from '../search';
 
 export default function DashboardLayout({
   children
@@ -69,19 +69,19 @@ function DesktopNav() {
           <span className="sr-only">Acme Inc</span>
         </Link>
 
-        <NavItem href="#" label="Dashboard">
+        <NavItem href="/admin-dashboard" label="Dashboard">
           <Home className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/doctors" label="Doctors">
+        <NavItem href="/admin-dashboard/doctors" label="Doctors">
           <Hospital className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/patients" label="Patients">
+        <NavItem href="/admin-dashboard/patients" label="Patients">
           <Users2 className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/facilities" label="Facilities">
+        <NavItem href="/admin-dashboard/facilities" label="Facilities">
           <Cable className="h-5 w-5" />
         </NavItem>
       </nav>
@@ -122,28 +122,28 @@ function MobileNav() {
             <span className="sr-only">Vercel</span>
           </Link>
           <Link
-            href="#"
+            href="/admin-dashboard"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
             <Home className="h-5 w-5" />
             Dashboard
           </Link>
           <Link
-            href="/doctors"
+            href="/admin-dashboard/doctors"
             className="flex items-center gap-4 px-2.5 text-foreground"
           >
             <Hospital className="h-5 w-5" />
             Doctors
           </Link>
           <Link
-            href="/patients"
+            href="/admin-dashboard/patients"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
             <Users2 className="h-5 w-5" />
             Patients
           </Link>
           <Link
-            href="/facilities"
+            href="/admin-dashboard/facilities"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
             <Cable className="h-5 w-5" />
@@ -161,18 +161,12 @@ function DashboardBreadcrumb() {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="#">Dashboard</Link>
+            <Link href="/admin-dashboard">Dashboard</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="#">Doctor</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>All Doctors</BreadcrumbPage>
+          <BreadcrumbPage>Admin</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
