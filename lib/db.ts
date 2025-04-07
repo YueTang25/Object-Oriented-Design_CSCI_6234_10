@@ -35,6 +35,22 @@ export type AvailabilityType = {
   end_time: string;
 };
 
+export type SearchByType = {
+  date: string,
+  specialty: string;
+  location: string;
+};
+
+export type DoctorAvailabilityType = {
+  name: string;
+  doctor_id: number;
+  specialty: string;
+  location: string;
+  date: string,
+  start_time: string;
+  end_time: string;
+};
+
 export async function getDoctors() {
   try {
     const data = await db`
@@ -120,5 +136,50 @@ export async function getAvailability(user_id: number) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch the all Available time, user_id = ' + user_id);
+  }
+}
+
+export async function searchAvailability(searchBy: SearchByType) {
+  try {
+    if (searchBy.specialty) {
+      const data = await db`
+    SELECT 
+    dl.doctor_id,
+    u.name,
+    dl.specialty,
+    dl.location,
+    da.date,
+    da.start_time,
+    da.end_time
+    FROM doctor_availability da
+    JOIN doctor_licenses dl ON da.doctor_id = dl.doctor_id
+    JOIN doctors d ON d.doctor_id = dl.doctor_id
+    JOIN users u ON d.user_id = u.user_id
+    WHERE da.date = ${searchBy.date} AND dl.specialty = ${searchBy.specialty}
+    ` as AvailabilityType[];
+
+    return data;
+    } else {
+      const data = await db`
+    SELECT 
+    dl.doctor_id,
+    u.name,
+    dl.specialty,
+    dl.location,
+    da.date,
+    da.start_time,
+    da.end_time
+    FROM doctor_availability da
+    JOIN doctor_licenses dl ON da.doctor_id = dl.doctor_id
+    JOIN doctors d ON d.doctor_id = dl.doctor_id
+    JOIN users u ON d.user_id = u.user_id
+    WHERE da.date = ${searchBy.date} AND dl.location = ${searchBy.location}
+    `as AvailabilityType[];
+
+    return data;
+    }
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to search the Available time, SearchBy = ' + JSON.stringify(searchBy));
   }
 }

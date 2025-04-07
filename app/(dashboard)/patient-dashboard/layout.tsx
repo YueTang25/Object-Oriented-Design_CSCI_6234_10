@@ -69,15 +69,15 @@ function DesktopNav() {
           <span className="sr-only">Acme Inc</span>
         </Link>
 
-        <NavItem href="/doctor-dashboard" label="Dashboard">
+        <NavItem href="/patient-dashboard" label="Dashboard">
           <Home className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/doctor-dashboard/schedule" label="Schedule">
+        <NavItem href="/patient-dashboard/appointment" label="Appointment">
           <Hospital className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/doctor-dashboard/availability" label="Availability">
+        <NavItem href="/patient-dashboard/payment" label="Payment">
           <Users2 className="h-5 w-5" />
         </NavItem>
       </nav>
@@ -118,25 +118,25 @@ function MobileNav() {
             <span className="sr-only">Vercel</span>
           </Link>
           <Link
-            href="/doctor-dashboard"
+            href="/patient-dashboard"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
             <Home className="h-5 w-5" />
             Dashboard
           </Link>
           <Link
-            href="/doctor-dashboard/schedule"
+            href="/patient-dashboard/appointment"
             className="flex items-center gap-4 px-2.5 text-foreground"
           >
             <Hospital className="h-5 w-5" />
-            Schedule
+            Appointment
           </Link>
           <Link
-            href="/doctor-dashboard/availability"
+            href="/patient-dashboard/payment"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
             <Users2 className="h-5 w-5" />
-            Availability
+            Payment
           </Link>
         </nav>
       </SheetContent>
@@ -150,12 +150,12 @@ function DashboardBreadcrumb() {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="/doctor-dashboard">Dashboard</Link>
+            <Link href="/patient-dashboard">Dashboard</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>Doctor</BreadcrumbPage>
+          <BreadcrumbPage>Patient</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
