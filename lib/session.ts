@@ -7,10 +7,6 @@ type UserSession = {
     role?: string; // Make role optional
 };
 
-// export async function setUserSession(user: { id: string; role: string }) {
-//     (await cookies()).set('session', JSON.stringify(user), { httpOnly: true });
-// }
-
 export async function setUserSession(user: { id: string; role?: string }) {
     (await cookies()).set('session', JSON.stringify(user), {
         httpOnly: true,
