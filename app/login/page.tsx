@@ -1,6 +1,5 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -12,16 +11,15 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify({ email: email, password: password }),
     });
 
-    if (res?.error) {
+    if (!res.ok) {
       setError("Invalid email or password");
     } else {
-      router.push("/admin-dashboard"); // or wherever after login
+      router.push("/redirect"); // or wherever after login
     }
   };
 

@@ -1,28 +1,38 @@
 'use client';
 
 import { useState } from 'react';
+import { AvailabilityType } from '@/lib/db';
 
-type Availability = {
-  day: string;
-  startTime: string;
-  endTime: string;
-};
-
-export default function AvailabilityScheduler() {
-  const [availability, setAvailability] = useState<Availability[]>([]);
-  const [form, setForm] = useState({ day: '', startTime: '', endTime: '' });
-
+export default function AvailabilityScheduler({ initialData }: { initialData: AvailabilityType[] }) {
+  const [availability, setAvailability] = useState<AvailabilityType[]>(initialData);
+  const [form, setForm] = useState({ day: '', start_time: '', end_time: '' });
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-  const handleAdd = () => {
-    const { day, startTime, endTime } = form;
-    if (day && startTime && endTime) {
-      setAvailability([...availability, { day, startTime, endTime }]);
-      setForm({ day: '', startTime: '', endTime: '' });
+  const handleAdd = async () => {
+    const { day, start_time, end_time } = form;
+    const date = getNextWeekDate(day)
+    if (day && start_time && end_time) {
+      await fetch(`/api/availability`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ date, day, start_time, end_time }),
+      });
+      setAvailability([...availability, { date, day, start_time, end_time }]);
+      setForm({ day: '', start_time: '', end_time: '' });
     }
   };
 
-  const handleRemove = (indexToRemove: number) => {
+  const handleRemove = async (indexToRemove: number) => {
+    const deleteAvailability = availability[indexToRemove];
+    await fetch(`/api/availability`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(deleteAvailability),
+    });
     setAvailability(availability.filter((_, i) => i !== indexToRemove));
   };
 
@@ -48,8 +58,8 @@ export default function AvailabilityScheduler() {
           {/* Start Time */}
           <select
             className="border px-3 py-2 rounded w-1/4"
-            value={form.startTime}
-            onChange={(e) => setForm({ ...form, startTime: e.target.value })}
+            value={form.start_time}
+            onChange={(e) => setForm({ ...form, start_time: e.target.value })}
           >
             <option value="">Start Time</option>
             {generateTimeOptions().map((time) => (
@@ -62,8 +72,8 @@ export default function AvailabilityScheduler() {
           {/* End Time */}
           <select
             className="border px-3 py-2 rounded w-1/4"
-            value={form.endTime}
-            onChange={(e) => setForm({ ...form, endTime: e.target.value })}
+            value={form.end_time}
+            onChange={(e) => setForm({ ...form, end_time: e.target.value })}
           >
             <option value="">End Time</option>
             {generateTimeOptions().map((time) => (
@@ -87,8 +97,8 @@ export default function AvailabilityScheduler() {
                 slot.day === day ? (
                   <div key={index} className="bg-green-100 p-3 rounded mb-2">
                     <div className="text-sm font-medium">AVAILABLE</div>
-                    <div className="text-sm">FROM {slot.startTime}</div>
-                    <div className="text-sm">TO {slot.endTime}</div>
+                    <div className="text-sm">FROM {slot.start_time}</div>
+                    <div className="text-sm">TO {slot.end_time}</div>
                     <button
                       onClick={() => handleRemove(index)}
                       className="mt-2 bg-black text-white px-2 py-1 rounded text-sm"
@@ -113,8 +123,34 @@ function generateTimeOptions() {
     for (let m = 0; m < 60; m += 30) {
       const hour = h.toString().padStart(2, '0');
       const minute = m.toString().padStart(2, '0');
-      times.push(`${hour}:${minute}`);
+      times.push(`${hour}:${minute}:00`);
     }
   }
   return times;
+}
+
+//dateUtils
+// utils/dateUtils.ts
+export function getNextWeekDate(day: string) {
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0 (Sun) to 6 (Sat)
+
+  // Calculate days until next Monday
+  let daysUntilMonday = (1 - dayOfWeek + 7) % 7;
+  daysUntilMonday = daysUntilMonday === 0 ? 7 : daysUntilMonday; // Handle Sunday
+
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  // Generate Monday-Friday dates
+  for (let i = 0; i < 5; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + daysUntilMonday + i);
+
+    const dateString = date.toISOString().split('T')[0];
+    const dayName = days[date.getDay()];
+    if (day == dayName) {
+      return dateString;
+    }
+  }
+  return ""
 }

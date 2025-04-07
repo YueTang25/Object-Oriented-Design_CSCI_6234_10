@@ -20,6 +20,21 @@ export type RoomType = {
   capability: string;
 };
 
+export type UserType = {
+  user_id: number;
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+};
+
+export type AvailabilityType = {
+  date: string,
+  day: string;
+  start_time: string;
+  end_time: string;
+};
+
 export async function getDoctors() {
   try {
     const data = await db`
@@ -68,5 +83,42 @@ export async function getRooms(clinic_id: number) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch the all rooms, clinic_id = ' + clinic_id);
+  }
+}
+
+export async function getUserInfo(email: String, password: String) {
+  try {
+    // Direct database query with email and password
+    const [user] = await db`
+      SELECT user_id, email, role 
+      FROM users 
+      WHERE email = ${email} AND password = ${password}`;
+
+    return user || null;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the user information, email = ' + email);
+  }
+}
+
+export async function getAvailability(user_id: number) {
+  try {
+    const [user] = await db`
+      SELECT doctor_id
+      FROM doctors
+      WHERE user_id = ${user_id}`;
+    const doctor_id = user?.doctor_id || 0;
+    const data = await db`
+      SELECT 
+      date,
+      TRIM(TO_CHAR(date, 'Day')) AS day,
+      start_time,
+      end_time
+      FROM doctor_availability
+      WHERE doctor_availability.doctor_id = ${doctor_id};` as AvailabilityType[];
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the all Available time, user_id = ' + user_id);
   }
 }
