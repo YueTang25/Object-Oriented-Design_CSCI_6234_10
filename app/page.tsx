@@ -54,7 +54,7 @@ export default function HomePage() {
                 Manage Doctors
               </li>
             </ul>
-            <Link href="/admin-dashboard" className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors">
+            <Link href="/redirect" className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors">
               Access Admin Dashboard
             </Link>
           </div>
@@ -91,7 +91,7 @@ export default function HomePage() {
                 View Patient History
               </li>
             </ul>
-            <Link href="/doctor-dashboard" className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors">
+            <Link href="/redirect" className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors">
               Access Doctor Dashboard
             </Link>
           </div>
@@ -128,7 +128,7 @@ export default function HomePage() {
                 Book New Appointments
               </li>
             </ul>
-            <Link href="/patient-dashboard" className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors">
+            <Link href="/redirect" className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors">
               Access Patient Dashboard
             </Link>
           </div>

@@ -31,6 +31,7 @@ export async function getUserId() {
 
 export async function clearSession() {
     (await cookies()).delete('session');
+    redirect('/login');
 }
 
 export async function validateSession() {
