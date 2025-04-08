@@ -157,11 +157,13 @@ export async function createPatient(user: PatientType) {
         INSERT INTO users (
         name, 
         email, 
-        password
+        password,
+        role
         ) VALUES (
          ${user.name}, 
          ${user.email}, 
-         ${user.password})
+         ${user.password},
+         ${user.role})
          RETURNING user_id
         `;
         console.log("user_id",data[0].user_id)
