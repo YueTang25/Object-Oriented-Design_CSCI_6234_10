@@ -25,6 +25,11 @@ export async function getUserId() {
     return user?.id ? Number(user.id) : 0;
 }
 
+export async function getUserRole() {
+    const user = await getUserSession();
+    return user?.role ? user.role : "";
+}
+
 export async function clearSession() {
     (await cookies()).delete('session');
     redirect('/login');

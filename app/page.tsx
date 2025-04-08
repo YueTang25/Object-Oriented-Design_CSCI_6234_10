@@ -1,6 +1,16 @@
-import Link from 'next/link';
+"use client"
+import { getUserRole } from '@/lib/session';
+import { redirect } from 'next/navigation';
 
 export default function HomePage() {
+  const handleRedirect = async (r: string) => {
+    const role = await getUserRole();
+    if (role == r) {
+      redirect('/redirect');
+    }else{
+      redirect('/login');
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br">
       {/* Navigation */}
@@ -54,9 +64,10 @@ export default function HomePage() {
                 Manage Doctors
               </li>
             </ul>
-            <Link href="/redirect" className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors">
+            <button className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors"
+            onClick={() => handleRedirect("admin")}>
               Access Admin Dashboard
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -91,9 +102,10 @@ export default function HomePage() {
                 View Patient History
               </li>
             </ul>
-            <Link href="/redirect" className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors">
+            <button className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors"
+            onClick={() => handleRedirect("doctor")}>
               Access Doctor Dashboard
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -128,9 +140,10 @@ export default function HomePage() {
                 Book New Appointments
               </li>
             </ul>
-            <Link href="/redirect" className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors">
+            <button className="mt-6 inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-300 transition-colors"
+            onClick={() => handleRedirect("patient")}>
               Access Patient Dashboard
-            </Link>
+            </button>
           </div>
         </div>
       </div>
