@@ -20,7 +20,7 @@ export type RoomType = {
   capability: string;
 };
 
-export type UserType = {
+export type PatientType = {
   user_id: number;
   name: string;
   email: string;
@@ -70,6 +70,17 @@ export type LicenseType = {
   specialty: string;
 };
 
+export type UserType = {
+  user_id: number;
+  name: string;
+  dob: string;
+  gender: string;
+  address: string;
+  phone_number: string;
+  email: string;
+  role: string;
+};
+
 export async function getDoctors() {
   try {
     const data = await db`
@@ -88,7 +99,7 @@ export async function getPatients() {
     const data = await db`
       SELECT users.name, patient_info.user_id, patient_info.patient_id
       FROM patient_info
-      JOIN users ON patient_info.user_id = users.user_id` as UserType[];
+      JOIN users ON patient_info.user_id = users.user_id` as PatientType[];
     return data;
   } catch (error) {
     console.error('Database Error:', error);
@@ -292,5 +303,18 @@ export async function getLicenses(doctor_id: number) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch the all licenses, doctor_id = ' + doctor_id);
+  }
+}
+
+export async function getUsers() {
+  try {
+    const data = await db`
+      SELECT *
+      FROM users
+      ORDER BY user_id;` as UserType[];
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the all users.');
   }
 }

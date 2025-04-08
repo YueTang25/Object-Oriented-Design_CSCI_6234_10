@@ -1,5 +1,5 @@
 import { neon } from '@neondatabase/serverless';
-import { RoomType, AvailabilityType, AppointmentType, UserType, LicenseType } from '@/lib/db';
+import { RoomType, AvailabilityType, AppointmentType, PatientType, LicenseType, UserType } from '@/lib/db';
 
 export const db = neon(process.env.DATABASE_URL!);
 
@@ -151,7 +151,7 @@ export async function deleteAppointment(appointment: AppointmentType, user_id: n
     }
 }
 
-export async function createPatient(user: UserType) {
+export async function createPatient(user: PatientType) {
     try {
         const data = await db`
         INSERT INTO users (
@@ -212,5 +212,25 @@ export async function deleteLicense(license: LicenseType) {
         console.error('Database Error:', error);
         console.error('Failed to Delete license, license = ' + JSON.stringify(license));
         return { message: 'Database Error: Failed to Delete license, license = ' + JSON.stringify(license) };
+    }
+}
+
+export async function updateUserInfo(user: UserType) {
+    try {
+        await db`
+        UPDATE users
+        SET 
+        name = ${user.name},
+        dob = ${user.dob},
+        gender = ${user.gender},
+        address = ${user.address},
+        phone_number = ${user.phone_number},
+        email = ${user.email}
+        WHERE user_id = ${user.user_id}
+      `;
+    } catch (error) {
+        console.error('Database Error:', error);
+        console.error('Failed to Update user, user = ' + JSON.stringify(user));
+        return { message: 'Database Error: Failed to Update user, user = ' + JSON.stringify(user) };
     }
 }

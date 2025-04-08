@@ -92,23 +92,21 @@ const DoctorLicensesModal: React.FC<DoctorLicensesModalProps> = ({
                         onChange={(e) => setLocation(e.target.value)}
                         className="border p-2 rounded w-full mt-2"
                     />
-                </div>
-
-
-                {/* Buttons */}
-                <div className="mt-6 flex justify-between">
-                    <button
-                        className="px-3 py-1 bg-gray text-black rounded"
-                        onClick={onClose}
-                    >
-                        return
-                    </button>
-                    <button
-                        className="px-3 py-1 bg-black text-white rounded"
-                        onClick={addLicense}
-                    >
-                        confirm
-                    </button>
+                    {/* Buttons */}
+                    <div className="mt-6 flex justify-between">
+                        <button
+                            className="px-3 py-1 bg-gray-200 text-black rounded"
+                            onClick={onClose}
+                        >
+                            return
+                        </button>
+                        <button
+                            className="px-3 py-1 bg-black text-white rounded"
+                            onClick={addLicense}
+                        >
+                            confirm
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

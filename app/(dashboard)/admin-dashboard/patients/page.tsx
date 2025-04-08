@@ -1,13 +1,13 @@
 import PatientList from '@/components/ui/patients/patient-list';
 import { Suspense } from 'react';
-import { getPatients } from '@/lib/db';
+import { getUsers } from '@/lib/db';
 
 export default async function Page() {
-  const patients = await getPatients();
+  const users = await getUsers();
   return (
     <main>
       <Suspense>
-        <PatientList patients={patients}/>
+        <PatientList users={users}/>
       </Suspense>
     </main>
   );

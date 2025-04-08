@@ -1,0 +1,124 @@
+"use client"
+import React, { useState } from "react";
+import { UserType } from '@/lib/db';
+
+interface UserInfoModalProps {
+    selectedUser: UserType;
+    onClose: () => void;
+}
+
+const UserInfoModal: React.FC<UserInfoModalProps> = ({
+    selectedUser,
+    onClose,
+}) => {
+    const [form, setForm] = useState(selectedUser);
+
+    // Function to change the information
+    const updateUserInfo = async () => {
+        const response = await fetch(`/api/user/edit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(form),
+        });
+        if (!response.ok) {
+            throw new Error('Editing failed');
+        }
+
+        const result = await response.json();
+        console.log("edit information:", JSON.stringify(result));
+        alert(`Update Successfully!`);
+        window.location.reload(); 
+    };
+
+    return (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-[500px]">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold">User NO. {selectedUser.user_id} (Editing)</h2>
+                    <button onClick={onClose} className="text-gray-500 hover:text-black">✕</button>
+                </div>
+
+                {/* Editing information */}
+
+                <div className="border p-4 mt-4 rounded-md bg-gray-100">
+                    <div>
+                        <label className="block mb-1 mt-4 font-bold">Name:</label>
+                        <input
+                            type="text"
+                            value={form.name}
+                            onChange={(e) => setForm({ ...form, name: e.target.value })}
+                            className="w-full px-3 py-2 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 mt-4 font-bold">Email:</label>
+                        <input
+                            type="text"
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })}
+                            className="w-full px-3 py-2 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 mt-4 font-bold">Birth Day:</label>
+                        <input
+                            type="text"
+                            value={form.dob}
+                            onChange={(e) => setForm({ ...form, dob: e.target.value })}
+                            className="w-full px-3 py-2 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 mt-4 font-bold">Gender:</label>
+                        <input
+                            type="text"
+                            value={form.gender}
+                            onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                            className="w-full px-3 py-2 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 mt-4 font-bold">Phone Number:</label>
+                        <input
+                            type="text"
+                            value={form.phone_number}
+                            onChange={(e) => setForm({ ...form, phone_number: e.target.value })}
+                            className="w-full px-3 py-2 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 mt-4 font-bold">Address:</label>
+                        <input
+                            type="text"
+                            value={form.address}
+                            onChange={(e) => setForm({ ...form, address: e.target.value })}
+                            className="w-full px-3 py-2 border rounded"
+                        />
+                    </div>
+
+                </div>
+
+
+                {/* Buttons */}
+                <div className="mt-6 flex justify-between">
+                    <button
+                        className="px-3 py-1 bg-gray-200 text-black rounded"
+                        onClick={onClose}
+                    >
+                        return
+                    </button>
+                    <button
+                        className="px-3 py-1 bg-black text-white rounded"
+                        onClick={updateUserInfo}
+                    >
+                        confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default UserInfoModal;
