@@ -1,6 +1,6 @@
 "use client";
 import FacilityRoomsModal from "@/components/ui/facilities/facility-rooms-modal";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FacilityType, RoomType } from '@/lib/db';
 
 export default function FacilitiesPage({
@@ -30,7 +30,7 @@ export default function FacilitiesPage({
 
     return (
         
-        <div className="p-6 bg-gray-100 min-h-screen">
+        <div className="p-6 max-w-7xl mx-auto">
             <h1 className="text-3xl font-bold mb-6">Manage Facilities</h1>
 
             {/* Facility List */}

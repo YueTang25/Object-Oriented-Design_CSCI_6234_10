@@ -1,5 +1,5 @@
 import { neon } from '@neondatabase/serverless';
-import { RoomType, AvailabilityType, AppointmentType, UserType } from '@/lib/db';
+import { RoomType, AvailabilityType, AppointmentType, UserType, LicenseType } from '@/lib/db';
 
 export const db = neon(process.env.DATABASE_URL!);
 
@@ -178,5 +178,39 @@ export async function createPatient(user: UserType) {
         console.error('Database Error:', error);
         console.error('Failed to create patient, info = ' + JSON.stringify(user));
         return { message: 'Failed to create patient, info = ' + JSON.stringify(user) };
+    }
+}
+
+export async function addLicense(license: LicenseType) {
+    try {
+        await db`
+        INSERT INTO doctor_licenses(
+        doctor_id, 
+        location, 
+        specialty
+        ) VALUES (
+        ${license.doctor_id}, 
+        ${license.location}, 
+        ${license.specialty})
+    `;
+    } catch (error) {
+        console.error('Database Error:', error);
+        console.error('Failed to Insert license, license = ' + JSON.stringify(license));
+        return { message: 'Database Error: Failed to Insert license, license = ' + JSON.stringify(license) };
+    }
+}
+
+export async function deleteLicense(license: LicenseType) {
+    try {
+        await db`DELETE FROM doctor_licenses 
+        WHERE 
+        doctor_id = ${license.doctor_id} AND
+        location = ${license.location} AND
+        specialty = ${license.specialty}
+        `;
+    } catch (error) {
+        console.error('Database Error:', error);
+        console.error('Failed to Delete license, license = ' + JSON.stringify(license));
+        return { message: 'Database Error: Failed to Delete license, license = ' + JSON.stringify(license) };
     }
 }

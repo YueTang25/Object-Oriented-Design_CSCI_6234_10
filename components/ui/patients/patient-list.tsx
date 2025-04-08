@@ -1,13 +1,13 @@
 import { UserType } from '@/lib/db';
 
-export default async function PatientList({
+export default function PatientList({
   patients
 }: {
   patients: UserType[];
 }) {
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Manage Patients</h1>
 
       <div className="space-y-4">

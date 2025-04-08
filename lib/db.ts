@@ -64,6 +64,12 @@ export type AppointmentType = {
   location: string;
 };
 
+export type LicenseType = {
+  doctor_id: number;
+  location: string;
+  specialty: string;
+};
+
 export async function getDoctors() {
   try {
     const data = await db`
@@ -273,5 +279,18 @@ export async function getAppointmentByDoctorId(user_id: number) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to get the all appointments, user_id = ' + user_id);
+  }
+}
+
+export async function getLicenses(doctor_id: number) {
+  try {
+    const data = await db`
+      SELECT *
+      FROM doctor_licenses
+      WHERE doctor_licenses.doctor_id = ${doctor_id};` as LicenseType[];
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the all licenses, doctor_id = ' + doctor_id);
   }
 }
