@@ -1,5 +1,5 @@
 import { neon } from '@neondatabase/serverless';
-import { RoomType, AvailabilityType, AppointmentType } from '@/lib/db';
+import { RoomType, AvailabilityType, AppointmentType, UserType } from '@/lib/db';
 
 export const db = neon(process.env.DATABASE_URL!);
 
@@ -148,5 +148,35 @@ export async function deleteAppointment(appointment: AppointmentType, user_id: n
         console.error('Database Error:', error);
         console.error('Failed to Delete appointment, appointments = ' + JSON.stringify(appointment));
         return { message: 'Database Error: Failed to Delete appointment, appointment_id = ' + appointment.appointment_id };
+    }
+}
+
+export async function createPatient(user: UserType) {
+    try {
+        const data = await db`
+        INSERT INTO users (
+        name, 
+        email, 
+        password
+        ) VALUES (
+         ${user.name}, 
+         ${user.email}, 
+         ${user.password})
+         RETURNING user_id
+        `;
+        console.log("user_id",data[0].user_id)
+        const patient_id = await db`
+        INSERT INTO patient_info (
+        user_id
+        ) VALUES (
+         ${data[0].user_id})
+         RETURNING patient_id
+        `;
+        user.user_id = data[0].user_id
+        return { data: user};
+    } catch (error) {
+        console.error('Database Error:', error);
+        console.error('Failed to create patient, info = ' + JSON.stringify(user));
+        return { message: 'Failed to create patient, info = ' + JSON.stringify(user) };
     }
 }
