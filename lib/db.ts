@@ -69,7 +69,7 @@ export async function getDoctors() {
     const data = await db`
       SELECT users.name, doctors.user_id, doctors.doctor_id, doctors.doctor_info
       FROM doctors
-      JOIN users ON doctors.user_id = users.user_id`;
+      JOIN users ON doctors.user_id = users.user_id` as DoctorType[];
     return data;
   } catch (error) {
     console.error('Database Error:', error);
@@ -82,7 +82,7 @@ export async function getPatients() {
     const data = await db`
       SELECT users.name, patient_info.user_id, patient_info.patient_id
       FROM patient_info
-      JOIN users ON patient_info.user_id = users.user_id`;
+      JOIN users ON patient_info.user_id = users.user_id` as UserType[];
     return data;
   } catch (error) {
     console.error('Database Error:', error);

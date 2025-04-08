@@ -6,7 +6,7 @@ export default async function Page() {
     const facilities = await getFacilities();
     return (
         <main>
-            <Suspense fallback={<h2>Loading...</h2>}>
+            <Suspense>
                 <FacilitiesPage facilities={facilities}/>
             </Suspense>
         </main>

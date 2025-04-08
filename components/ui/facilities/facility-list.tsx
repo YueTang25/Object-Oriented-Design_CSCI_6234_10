@@ -30,7 +30,7 @@ export default function FacilitiesPage({
 
     return (
         
-        <div className="max-w-2xl mx-auto p-6">
+        <div className="p-6 bg-gray-100 min-h-screen">
             <h1 className="text-3xl font-bold mb-6">Manage Facilities</h1>
 
             {/* Facility List */}
@@ -40,7 +40,7 @@ export default function FacilitiesPage({
                         <h2 className="text-xl font-semibold">clinic id: {facility.clinic_id}</h2>
                         <p className="text-gray-600"> location: {facility.location}</p>
                         <button
-                            className="mt-2 px-4 py-2 bg-black text-white rounded"
+                            className="mt-2 px-4 py-2 bg-gray-200 rounded"
                             onClick={() => handleViewRooms(facility)}
                         >
                             Manage Rooms

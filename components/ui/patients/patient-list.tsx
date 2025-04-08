@@ -1,12 +1,14 @@
-import { getPatients } from '@/lib/db';
+import { UserType } from '@/lib/db';
 
-export default async function PatientList() {
-
-  const patients = await getPatients();
+export default async function PatientList({
+  patients
+}: {
+  patients: UserType[];
+}) {
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Patients</h1>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6">Manage Patients</h1>
 
       <div className="space-y-4">
         {patients.map((patient) => (
