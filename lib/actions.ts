@@ -1,5 +1,5 @@
 import { neon } from '@neondatabase/serverless';
-import { RoomType, AvailabilityType } from '@/lib/db';
+import { RoomType, AvailabilityType, AppointmentType } from '@/lib/db';
 
 export const db = neon(process.env.DATABASE_URL!);
 
@@ -81,5 +81,72 @@ export async function deleteAvailability(availability: AvailabilityType, user_id
         console.error('Database Error:', error);
         console.error('Failed to delete availability, user_id = ' + user_id);
         return { message: 'Database Error: Failed to delete availability, availability = ' + JSON.stringify(availability) };
+    }
+}
+
+export async function createAppointment(appointment: AppointmentType, user_id: number) {
+    try {
+        const [user] = await db`
+        SELECT patient_id
+        FROM patient_info
+        WHERE user_id = ${user_id}`;
+        const patient_id = user?.patient_id || 0;
+        await db`
+        UPDATE doctor_availability 
+        SET start_time = (start_time + INTERVAL '30 minutes')::TIME
+        WHERE
+        doctor_id = ${appointment.doctor_id} AND
+        date = ${appointment.date} AND
+        start_time = ${appointment.start_time}
+      `;
+        const [facility] = await db`
+        SELECT clinic_id 
+        FROM clinics 
+        WHERE location = ${appointment.location}`;
+
+        // Book the appointment
+        const result = await db`
+        INSERT INTO appointments (
+        duration, 
+        start_time, 
+        date, 
+        clinic_id, 
+        exam_room_id, 
+        doctor_id, 
+        patient_id
+        ) VALUES (
+        ${appointment.duration}, 
+        ${appointment.start_time},
+        ${appointment.date},  
+        ${facility.clinic_id}, 
+        1, 
+        ${appointment.doctor_id}, 
+        ${patient_id})
+        RETURNING *
+    `;
+        return result;
+    } catch (error) {
+        console.error('Database Error:', error);
+        console.error('Failed to create Appointment = ' + JSON.stringify(appointment));
+        return { message: 'Database Error: Failed to create Appointment' };
+    }
+}
+
+export async function deleteAppointment(appointment: AppointmentType, user_id: number) {
+    try {
+        const [user] = await db`
+        SELECT patient_id
+        FROM patient_info
+        WHERE user_id = ${user_id}`;
+        const patient_id = user?.patient_id || 0;
+        await db`DELETE FROM appointments 
+        WHERE 
+        appointment_id = ${appointment.appointment_id} AND
+        patient_id = patient_id
+        `;
+    } catch (error) {
+        console.error('Database Error:', error);
+        console.error('Failed to Delete appointment, appointments = ' + JSON.stringify(appointment));
+        return { message: 'Database Error: Failed to Delete appointment, appointment_id = ' + appointment.appointment_id };
     }
 }

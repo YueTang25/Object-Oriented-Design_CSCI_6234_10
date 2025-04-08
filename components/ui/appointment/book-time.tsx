@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from "react";
-import { DoctorAvailabilityType } from '@/lib/db';
+import { DoctorAvailabilityType, AppointmentType } from '@/lib/db';
 
 const specialties = [
     "",
@@ -13,15 +13,24 @@ const specialties = [
 
 const locations = ["", "dc", "maryland", "virginia"];
 
-export default function BookAppointment() {
+export default function BookAppointment({
+    pastAppointmentsInitial,
+    futureAppointmentsInitial
+}: {
+    pastAppointmentsInitial: AppointmentType[];
+    futureAppointmentsInitial: AppointmentType[];
+}) {
     const [searchBy, setSearchBy] = useState("specialty");
     const [selectedValue, setSelectedValue] = useState("");
     const [date, setDate] = useState("");
     const [doctors, setDoctors] = useState<DoctorAvailabilityType[]>([]);
+    const [pastAppointments, setPastAppointments] = useState<AppointmentType[]>(pastAppointmentsInitial);
+    const [futureAppointments, setFutureAppointments] = useState<AppointmentType[]>(futureAppointmentsInitial);
+    console.log("page"+JSON.stringify(pastAppointments)+JSON.stringify(futureAppointments))
 
     const handleSearch = async () => {
         if (searchBy && selectedValue) {
-            console.log("searchBy"+searchBy+"selectedValue"+selectedValue)
+            console.log("searchBy" + searchBy + "selectedValue" + selectedValue)
             if (searchBy == "specialty") {
                 const specialty = selectedValue;
                 const response = await fetch(`/api/appointment/search`, {
@@ -45,6 +54,63 @@ export default function BookAppointment() {
                 const results = await response.json();
                 setDoctors(results.data);
             }
+        }
+    };
+
+    const handleBookAppointment = async (appointment: DoctorAvailabilityType) => {
+        try {
+            const response = await fetch('/api/appointment/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    doctor_id: appointment.doctor_id,
+                    date: appointment.date,
+                    start_time: appointment.start_time,
+                    duration: "00:30:00",
+                    specialty: appointment.specialty,
+                    location: appointment.location
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Booking failed');
+            }
+
+            const result = await response.json();
+            console.log("book information:", JSON.stringify(result));
+            alert(`Appointment booked!`);
+            window.location.reload(); 
+        } catch (error) {
+            console.error('Booking error:', error);
+            alert('Failed to book appointment. Please try again.');
+        }
+    };
+
+    const handleCancelAppointment = async (appointment: AppointmentType) => {
+        try {
+            const response = await fetch('/api/appointment/cancel', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    appointment_id: appointment.appointment_id
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Canceling failed');
+            }
+
+            const result = await response.json();
+            console.log("book information:", JSON.stringify(result));
+            alert(`Appointment canceled!`);
+            window.location.reload(); 
+        } catch (error) {
+            console.error('Canceling error:', error);
+            alert('Failed to cancel appointment. Please try again.');
         }
     };
 
@@ -104,7 +170,8 @@ export default function BookAppointment() {
                         <p>Start Time: {doc.start_time}</p>
                         <p>End Time: {doc.end_time}</p>
                         <p>Location: {doc.location}</p>
-                        <button className="mt-4 px-4 py-2 bg-black text-white rounded">
+                        <button className="mt-4 px-4 py-2 bg-black text-white rounded"
+                            onClick={() => handleBookAppointment(doc)}>
                             Book
                         </button>
                     </div>
@@ -114,22 +181,28 @@ export default function BookAppointment() {
             {/* Appointments */}
             <h2 className="text-xl font-semibold mb-4">Appointments</h2>
             <div className="space-y-4">
-                <div className="bg-white p-4 rounded shadow">
-                    <h3 className="text-lg font-bold mb-2">Past Appointment</h3>
-                    <p className="text-sm text-gray-600">
-                        Body text for whatever you'd like to say. Add main takeaway points,
-                        quotes, anecdotes, or even a very very short story.
-                    </p>
-                </div>
-
-                <div className="bg-white p-4 rounded shadow">
-                    <h3 className="text-lg font-bold mb-2">Future Appointment</h3>
-                    <p className="text-sm text-gray-600 mb-2">
-                        Body text for whatever you'd like to say. Add main takeaway points,
-                        quotes, anecdotes, or even a very very short story.
-                    </p>
-                    <button className="px-4 py-2 bg-gray-300 text-black rounded">Cancel</button>
-                </div>
+                {pastAppointments.map((appointment, index) => (
+                    <div key={appointment.appointment_id | index} className="border p-4 rounded-md shadow-sm">
+                        <div className="bg-white p-4 rounded shadow">
+                            <h3 className="text-lg font-bold mb-2">Past Appointment</h3>
+                            <p className="text-sm text-gray-600">
+                                No. {appointment.appointment_id} Date: {appointment.date} Start Time: {appointment.start_time}
+                            </p>
+                        </div>
+                    </div>
+                ))}
+                {futureAppointments.map((appointment, index) => (
+                    <div key={appointment.appointment_id | index} className="border p-4 rounded-md shadow-sm">
+                        <div className="bg-white p-4 rounded shadow">
+                            <h3 className="text-lg font-bold mb-2">Future Appointment</h3>
+                            <p className="text-sm text-gray-600 mb-2">
+                                No. {appointment.appointment_id} Date: {appointment.date} Start Time: {appointment.start_time}
+                            </p>
+                            <button className="px-4 py-2 bg-gray-300 text-black rounded"
+                            onClick={() => handleCancelAppointment(appointment)}>Cancel</button>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );

@@ -36,7 +36,7 @@ export type AvailabilityType = {
 };
 
 export type SearchByType = {
-  date: string,
+  date: string;
   specialty: string;
   location: string;
 };
@@ -46,9 +46,22 @@ export type DoctorAvailabilityType = {
   doctor_id: number;
   specialty: string;
   location: string;
-  date: string,
+  date: string;
   start_time: string;
   end_time: string;
+};
+
+export type AppointmentType = {
+  name: string;//doctor_name
+  appointment_id: number;
+  duration: string;
+  start_time: string;
+  date: string;
+  clinic_id: number;
+  exam_room_id: number;
+  doctor_id: number;
+  specialty: string;
+  location: string;
 };
 
 export async function getDoctors() {
@@ -181,5 +194,46 @@ export async function searchAvailability(searchBy: SearchByType) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to search the Available time, SearchBy = ' + JSON.stringify(searchBy));
+  }
+}
+
+export async function getAppointmentByPatientId(user_id: number) {
+  try {
+    const futureData = await db`
+      SELECT 
+      da.appointment_id,
+      da.duration::text AS duration,
+      da.start_time,
+      TO_CHAR(da.date::timestamp, 'Month DD, YYYY') AS date,
+      da.doctor_id,
+      u.name
+      FROM appointments da
+      JOIN patient_info dl ON da.patient_id = dl.patient_id
+      JOIN doctors d ON da.doctor_id = d.doctor_id
+      JOIN users u ON d.user_id = u.user_id
+      WHERE dl.user_id = ${user_id}
+      AND da.date >= CURRENT_DATE
+      AND (da.date > CURRENT_DATE OR da.start_time >= CURRENT_TIME)
+      ORDER BY da.date, start_time;` as AppointmentType[]
+      const pastData = await db`
+      SELECT 
+      da.appointment_id,
+      da.duration::text AS duration,
+      da.start_time,
+      TO_CHAR(da.date::timestamp, 'Month DD, YYYY') AS date,
+      da.doctor_id,
+      u.name
+      FROM appointments da
+      JOIN patient_info dl ON da.patient_id = dl.patient_id
+      JOIN doctors d ON da.doctor_id = d.doctor_id
+      JOIN users u ON d.user_id = u.user_id
+      WHERE dl.user_id = ${user_id}
+      AND da.date <= CURRENT_DATE
+      AND (da.date < CURRENT_DATE OR da.start_time < CURRENT_TIME)
+      ORDER BY da.date, start_time;` as AppointmentType[]
+    return [pastData, futureData];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to get the all appointments, user_id = ' + user_id);
   }
 }

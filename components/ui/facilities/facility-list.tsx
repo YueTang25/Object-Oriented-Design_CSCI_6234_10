@@ -3,7 +3,7 @@ import FacilityRoomsModal from "@/components/ui/facilities/facility-rooms-modal"
 import React, { useState, useEffect } from "react";
 import { FacilityType, RoomType } from '@/lib/db';
 
-export default async function FacilitiesPage({
+export default function FacilitiesPage({
     facilities
 }: {
     facilities: FacilityType[];
