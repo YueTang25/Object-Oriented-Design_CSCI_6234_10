@@ -237,3 +237,41 @@ export async function getAppointmentByPatientId(user_id: number) {
     throw new Error('Failed to get the all appointments, user_id = ' + user_id);
   }
 }
+
+export async function getAppointmentByDoctorId(user_id: number) {
+  try {
+    const todayData = await db`
+      SELECT 
+      da.appointment_id,
+      da.duration::text AS duration,
+      da.start_time,
+      TO_CHAR(da.date::timestamp, 'Month DD, YYYY') AS date,
+      da.doctor_id,
+      u.name
+      FROM appointments da
+      JOIN doctors d ON da.doctor_id = d.doctor_id
+      JOIN users u ON d.user_id = u.user_id
+      WHERE d.user_id = ${user_id}
+      AND da.date = CURRENT_DATE
+      ORDER BY da.date, start_time;` as AppointmentType[]
+      const futureData = await db`
+      SELECT 
+      da.appointment_id,
+      da.duration::text AS duration,
+      da.start_time,
+      TO_CHAR(da.date::timestamp, 'Month DD, YYYY') AS date,
+      da.doctor_id,
+      u.name
+      FROM appointments da
+      JOIN doctors d ON da.doctor_id = d.doctor_id
+      JOIN users u ON d.user_id = u.user_id
+      WHERE d.user_id = ${user_id}
+      AND da.date > CURRENT_DATE
+      ORDER BY da.date, start_time;` as AppointmentType[]
+    console.log("db",JSON.stringify([todayData, futureData]))
+    return [todayData, futureData];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to get the all appointments, user_id = ' + user_id);
+  }
+}
