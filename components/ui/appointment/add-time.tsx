@@ -50,7 +50,7 @@ export default function AvailabilityScheduler({ initialData }: { initialData: Av
             <option value="">Select Day</option>
             {days.map((day) => (
               <option key={day} value={day}>
-                {day}
+                {day} [{getNextWeekDate(day)}]
               </option>
             ))}
           </select>

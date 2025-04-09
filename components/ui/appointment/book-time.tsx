@@ -43,7 +43,9 @@ export default function BookAppointment({
                     body: JSON.stringify({ date, specialty }),
                 });
                 const results = await response.json();
-                setDoctors(results.data);
+                //only show 3 search information
+                const filteredResults = results.data.filter((_: any, index: number) => index < 3);
+                setDoctors(filteredResults);
             } else {
                 const location = selectedValue;
                 const response = await fetch(`/api/appointment/search`, {
