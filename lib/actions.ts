@@ -105,7 +105,7 @@ export async function createAppointment(appointment: AppointmentType, user_id: n
         WHERE location = ${appointment.location}`;
 
         // Book the appointment
-        const result = await db`
+        const inserted = await db`
         INSERT INTO appointments (
         duration, 
         start_time, 
@@ -122,8 +122,15 @@ export async function createAppointment(appointment: AppointmentType, user_id: n
         1, 
         ${appointment.doctor_id}, 
         ${patient_id})
-        RETURNING *
+        RETURNING appointment_id
     `;
+        const result = await db`
+        SELECT 
+        *, 
+        TO_CHAR(date::timestamp, 'Month DD, YYYY') AS date
+        FROM appointments
+        WHERE appointment_id = ${inserted[0].appointment_id}
+        `;
         return result;
     } catch (error) {
         console.error('Database Error:', error);
@@ -166,7 +173,7 @@ export async function createPatient(user: PatientType) {
          ${user.role})
          RETURNING user_id
         `;
-        console.log("user_id",data[0].user_id)
+        console.log("user_id", data[0].user_id)
         const patient_id = await db`
         INSERT INTO patient_info (
         user_id
@@ -175,7 +182,7 @@ export async function createPatient(user: PatientType) {
          RETURNING patient_id
         `;
         user.user_id = data[0].user_id
-        return { data: user};
+        return { data: user };
     } catch (error) {
         console.error('Database Error:', error);
         console.error('Failed to create patient, info = ' + JSON.stringify(user));

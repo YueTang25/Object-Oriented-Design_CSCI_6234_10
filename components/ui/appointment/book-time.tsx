@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { DoctorAvailabilityType, AppointmentType } from '@/lib/db';
 import { specialties, locations } from '@/lib/staticData';
 import { useNotification } from '@/components/ui/notificationContext';
+import { deleteAppointment } from "@/lib/actions";
 
 export default function BookAppointment({
     pastAppointmentsInitial,
@@ -19,7 +20,6 @@ export default function BookAppointment({
     const [doctors, setDoctors] = useState<DoctorAvailabilityType[]>([]);
     const [pastAppointments, setPastAppointments] = useState<AppointmentType[]>(pastAppointmentsInitial);
     const [futureAppointments, setFutureAppointments] = useState<AppointmentType[]>(futureAppointmentsInitial);
-    console.log("page" + JSON.stringify(pastAppointments) + JSON.stringify(futureAppointments))
 
     const handleSearch = async () => {
         if (searchBy && selectedValue) {
@@ -47,7 +47,9 @@ export default function BookAppointment({
                     body: JSON.stringify({ date, location }),
                 });
                 const results = await response.json();
-                setDoctors(results.data);
+                //only show 3 search information
+                const filteredResults = results.data.filter((_: any, index: number) => index < 3);
+                setDoctors(filteredResults);
             }
         }
     };
@@ -74,10 +76,23 @@ export default function BookAppointment({
                     message: 'Operation successful!',
                     type: 'success'
                 });
+                const result = await response.json();
+                setDoctors((prev) =>
+                    prev.filter(
+                        (doctor) =>
+                            doctor.doctor_id !== appointment.doctor_id ||
+                            doctor.location !== appointment.location ||
+                            doctor.specialty !== appointment.specialty
+                    )
+                );
+                setFutureAppointments((prev) =>
+                    [...prev, result.data[0]].sort(
+                        (a, b) =>
+                            new Date(`${a.date}T${a.start_time}`).getTime() -
+                            new Date(`${b.date}T${b.start_time}`).getTime()
+                    )
+                );
             }
-            const result = await response.json();
-            console.log("book information:", JSON.stringify(result));
-            window.location.reload();
         } catch (error) {
             console.error('Booking error:', error);
             showNotification({
@@ -104,10 +119,14 @@ export default function BookAppointment({
                     message: 'Operation successful!',
                     type: 'success'
                 });
+                setFutureAppointments((pre) =>
+                    futureAppointments.filter(
+                        (pre) => pre.appointment_id !== appointment.appointment_id
+                    )
+                );
             }
             const result = await response.json();
             console.log("book information:", JSON.stringify(result));
-            window.location.reload();
         } catch (error) {
             console.error('Canceling error:', error);
             showNotification({

@@ -6,6 +6,7 @@ import { useNotification } from '@/components/ui/notificationContext';
 interface UserInfoModalProps {
     selectedUser: UserType;
     onClose: () => void;
+    onUpdateUser: (user: UserType) => void;
 }
 
 const genders = [
@@ -20,6 +21,7 @@ const genders = [
 const UserInfoModal: React.FC<UserInfoModalProps> = ({
     selectedUser,
     onClose,
+    onUpdateUser
 }) => {
     const { showNotification } = useNotification();
 
@@ -28,6 +30,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
     // Function to change the information
     const updateUserInfo = async () => {
         try {
+            onUpdateUser(form);
             const response = await fetch(`/api/user/edit`, {
                 method: 'POST',
                 headers: {
@@ -43,7 +46,6 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
             }
             const result = await response.json();
             console.log("edit information:", JSON.stringify(result));
-            window.location.reload();
         } catch (error) {
             showNotification({
                 message: 'Operation failed',

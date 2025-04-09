@@ -9,14 +9,23 @@ export default function PatientList({
   users: UserType[];
 }) {
 
+  const [userList, setUserList] = useState<UserType[]>(users);
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
+
+  const handleUpdateUser = (updatedUser: UserType) => {
+    setUserList((prev) =>
+      prev.map((user) =>
+        user.user_id === updatedUser.user_id ? updatedUser : user
+      )
+    );
+  };
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Manage All Users</h1>
 
       <div className="space-y-4">
-        {users.map((user) => (
+        {userList.map((user) => (
           <div key={user.user_id} className="border p-4 rounded-lg shadow-sm bg-white">
             <h2 className="text-xl font-semibold">User Id: {user.user_id}</h2>
             <p className="text-gray-600">Name: {user.name}</p>
@@ -33,6 +42,7 @@ export default function PatientList({
         <UserInfoModal
           selectedUser={selectedUser}
           onClose={() => setSelectedUser(null)}
+          onUpdateUser={handleUpdateUser}
         />
       )}
     </div>
