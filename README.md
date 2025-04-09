@@ -32,3 +32,10 @@ npm dev
 ```
 
 You should now be able to access the application at http://localhost:3000.
+I also deploy it in vercel. You can visit it through https://admin-dashboard-three-rho-81.vercel.app/login 
+admin-email:admin@gmail.com 
+doctor:mary@gmail.com 
+patient:jason@gmail.com 
+all password is 123456 
+register page only for patient role. 
+Database link is https://console.neon.tech/app/projects/empty-fog-12500976/branches/br-yellow-darkness-a4y603e9/tables?database=neondb
