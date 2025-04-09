@@ -136,7 +136,7 @@ export async function getUserInfo(email: String, password: String) {
   try {
     // Direct database query with email and password
     const [user] = await db`
-      SELECT user_id, email, role 
+      SELECT user_id, email, role, name 
       FROM users 
       WHERE email = ${email} AND password = ${password}`;
 

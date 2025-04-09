@@ -3,7 +3,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { CalendarIcon, CreditCardIcon, UserIcon, PlusIcon } from '@/components/icons';
+import { getUserName, getUserId } from '@/lib/session';
 export default async function Page() {
+    const name = await getUserName();
+    const id = await getUserId();
     return (
         <main className="bg-gray-50 min-h-screen">
             <div className="p-6 max-w-7xl mx-auto">
@@ -12,7 +15,7 @@ export default async function Page() {
                     <h1 className="text-3xl font-bold text-gray-800 flex items-center">
                         <span className="mr-2">👋</span>
                         <span>
-                            Hello <span className="text-blue-600">Patient</span>...
+                            Hello <span className="text-blue-600">Patient</span>... {name} ID: {id}
                             <span className="ml-2 text-lg font-normal text-gray-500">Dashboard Overview</span>
                         </span>
                     </h1>

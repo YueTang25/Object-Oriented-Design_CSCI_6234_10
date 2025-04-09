@@ -10,6 +10,7 @@ export async function POST(req: Request) {
         const user = res.data
         await setUserSession({
             id: user.user_id?.toString() || '',
+            name: user.name,
             role: "patient" 
         });
     }

@@ -15,11 +15,13 @@ export async function POST(req: Request) {
 
     console.log('Storing session:', { // Debug log
         id: user.user_id,
+        name: user.name,
         role: user.role
     });
 
     await setUserSession({
         id: user?.user_id?.toString() || '',
+        name: user.name,
         role: user.role // Double-check this exists
     });
 

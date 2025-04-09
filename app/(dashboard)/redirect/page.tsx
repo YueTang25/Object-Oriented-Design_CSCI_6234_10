@@ -8,7 +8,7 @@ export default async function DashboardPage() {
 
   // Handle missing role
   if (!user.role) {
-    await setUserSession({ id: user.id }); // Clear invalid session
+    await setUserSession({ id: user.id, name: user.name }); // Clear invalid session
     redirect('/login');
   }
 
