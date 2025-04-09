@@ -1,18 +1,8 @@
 "use client"
 import React, { useState } from "react";
 import { DoctorAvailabilityType, AppointmentType } from '@/lib/db';
+import { specialties, locations } from '@/lib/staticData';
 import { useNotification } from '@/components/ui/notificationContext';
-
-const specialties = [
-    "",
-    "Family medicine",
-    "Dermatology",
-    "Obstetrics and gynaecology",
-    "Oncologist",
-    "Internal medicine",
-];
-
-const locations = ["", "dc", "maryland", "virginia"];
 
 export default function BookAppointment({
     pastAppointmentsInitial,

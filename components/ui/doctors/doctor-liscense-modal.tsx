@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import { DoctorType, LicenseType } from '@/lib/db';
+import { specialties, locations } from '@/lib/staticData';
 import { useNotification } from '@/components/ui/notificationContext';
 interface DoctorLicensesModalProps {
     doctor: DoctorType;
@@ -105,21 +106,37 @@ const DoctorLicensesModal: React.FC<DoctorLicensesModalProps> = ({
                 {/* Adding License */}
 
                 <div className="border p-4 mt-4 rounded-md bg-gray-100">
-                    <h3 className="text-lg font-semibold">new license (Adding)</h3>
-                    <input
-                        type="text"
-                        placeholder="Specialty"
-                        value={specialty}
-                        onChange={(e) => setSpecialty(e.target.value)}
-                        className="border p-2 rounded w-full mt-2"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Location"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        className="border p-2 rounded w-full mt-2"
-                    />
+                    <h3 className="mb-3 text-lg font-semibold">new license (Adding)</h3>
+                    <div className="mb-3">
+                        <label className="block mb-2 text-base font-medium text-gray-700">Specialty</label>
+                        <select
+                            value={specialty}
+                            onChange={(e) => setSpecialty(e.target.value)}
+                            className="w-full px-3 py-2 border rounded"
+                        >
+                            {specialties.map((val) => (
+                                <option key={val} value={val}>
+                                    {val}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="mb-6">
+                        <label className="block mb-2 text-base font-medium text-gray-700">Location</label>
+                        <select
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            className="w-full px-3 py-2 border rounded"
+                        >
+                            {locations.map((val) => (
+                                <option key={val} value={val}>
+                                    {val}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    
                     {/* Buttons */}
                     <div className="mt-6 flex justify-between">
                         <button
