@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import { DoctorType, LicenseType } from '@/lib/db';
+import { useNotification } from '@/components/ui/notificationContext';
 interface DoctorLicensesModalProps {
     doctor: DoctorType;
     Licenses: LicenseType[];
@@ -12,43 +13,70 @@ const DoctorLicensesModal: React.FC<DoctorLicensesModalProps> = ({
     Licenses,
     onClose,
 }) => {
+    const { showNotification } = useNotification();
+
     const [licenseList, setLicenseList] = useState<LicenseType[]>(Licenses);
     const [specialty, setSpecialty] = useState("");
     const [location, setLocation] = useState("");
 
     // Function to add a license
     const addLicense = async () => {
-        if (specialty && location) {
-            const newLicense = {
-                doctor_id: doctor.doctor_id,
-                specialty: specialty,
-                location: location,
-            };
-            const response = await fetch(`/api/license`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newLicense),
+        try {
+            if (specialty && location) {
+                const newLicense = {
+                    doctor_id: doctor.doctor_id,
+                    specialty: specialty,
+                    location: location,
+                };
+                const response = await fetch(`/api/license`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newLicense),
+                });
+                await response.json();
+                setLicenseList([...licenseList, newLicense]);
+                setSpecialty("");
+                setLocation("");
+                if (response.ok) {
+                    showNotification({
+                        message: 'Operation successful!',
+                        type: 'success'
+                    });
+                }
+            }
+        } catch (error) {
+            showNotification({
+                message: 'Operation failed',
+                type: 'error'
             });
-            await response.json();
-            setLicenseList([...licenseList, newLicense]);
-            setSpecialty("");
-            setLocation("");
         }
     };
 
     // Function to delete a license
     const deleteLicense = async (license: LicenseType, indexToRemove: number) => {
-        console.log("license:", license);
-        const response = await fetch(`/api/license`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(license),
-        });
-        setLicenseList(licenseList.filter((_, i) => i !== indexToRemove));
+        try {
+            const response = await fetch(`/api/license`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(license),
+            });
+            setLicenseList(licenseList.filter((_, i) => i !== indexToRemove));
+            if (response.ok) {
+                showNotification({
+                    message: 'Operation successful!',
+                    type: 'success'
+                });
+            }
+        } catch (error) {
+            showNotification({
+                message: 'Operation failed',
+                type: 'error'
+            });
+        }
     };
 
     return (

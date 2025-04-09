@@ -2,38 +2,67 @@
 
 import { useState } from 'react';
 import { AvailabilityType } from '@/lib/db';
+import { useNotification } from '@/components/ui/notificationContext';
 
 export default function AvailabilityScheduler({ initialData }: { initialData: AvailabilityType[] }) {
+  const { showNotification } = useNotification();
+
   const [availability, setAvailability] = useState<AvailabilityType[]>(initialData);
   const [form, setForm] = useState({ day: '', start_time: '', end_time: '' });
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
   const handleAdd = async () => {
-    const { day, start_time, end_time } = form;
-    const date = getNextWeekDate(day)
-    if (day && start_time && end_time) {
-      await fetch(`/api/availability`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ date, day, start_time, end_time }),
+    try {
+      const { day, start_time, end_time } = form;
+      const date = getNextWeekDate(day)
+      if (day && start_time && end_time) {
+        const response = await fetch(`/api/availability`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ date, day, start_time, end_time }),
+        });
+        if (response.ok) {
+          showNotification({
+            message: 'Operation successful!',
+            type: 'success'
+          });
+        }
+        setAvailability([...availability, { date, day, start_time, end_time }]);
+        setForm({ day: '', start_time: '', end_time: '' });
+      }
+    } catch (error) {
+      showNotification({
+        message: 'Operation failed',
+        type: 'error'
       });
-      setAvailability([...availability, { date, day, start_time, end_time }]);
-      setForm({ day: '', start_time: '', end_time: '' });
     }
   };
 
   const handleRemove = async (indexToRemove: number) => {
-    const deleteAvailability = availability[indexToRemove];
-    await fetch(`/api/availability`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(deleteAvailability),
-    });
-    setAvailability(availability.filter((_, i) => i !== indexToRemove));
+    try {
+      const deleteAvailability = availability[indexToRemove];
+      const response = await fetch(`/api/availability`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(deleteAvailability),
+      });
+      setAvailability(availability.filter((_, i) => i !== indexToRemove));
+      if (response.ok) {
+        showNotification({
+          message: 'Operation successful!',
+          type: 'success'
+        });
+      }
+    } catch (error) {
+      showNotification({
+        message: 'Operation failed',
+        type: 'error'
+      });
+    }
   };
 
   return (

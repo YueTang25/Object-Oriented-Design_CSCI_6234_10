@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import { UserType } from '@/lib/db';
+import { useNotification } from '@/components/ui/notificationContext';
 
 interface UserInfoModalProps {
     selectedUser: UserType;
@@ -20,25 +21,36 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
     selectedUser,
     onClose,
 }) => {
+    const { showNotification } = useNotification();
+
     const [form, setForm] = useState(selectedUser);
 
     // Function to change the information
     const updateUserInfo = async () => {
-        const response = await fetch(`/api/user/edit`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(form),
-        });
-        if (!response.ok) {
-            throw new Error('Editing failed');
+        try {
+            const response = await fetch(`/api/user/edit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(form),
+            });
+            if (response.ok) {
+                showNotification({
+                    message: 'Operation successful!',
+                    type: 'success'
+                });
+            }
+            const result = await response.json();
+            console.log("edit information:", JSON.stringify(result));
+            window.location.reload();
+        } catch (error) {
+            showNotification({
+                message: 'Operation failed',
+                type: 'error'
+            });
         }
 
-        const result = await response.json();
-        console.log("edit information:", JSON.stringify(result));
-        alert(`Update Successfully!`);
-        window.location.reload();
     };
 
     return (

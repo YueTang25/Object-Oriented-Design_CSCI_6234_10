@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import { FacilityType, RoomType } from '@/lib/db';
+import { useNotification } from '@/components/ui/notificationContext';
 interface FacilityRoomsModalProps {
     facility: FacilityType;
     rooms: RoomType[];
@@ -12,6 +13,8 @@ const FacilityRoomsModal: React.FC<FacilityRoomsModalProps> = ({
     rooms,
     onClose,
 }) => {
+    const { showNotification } = useNotification();
+
     const [roomList, setRoomList] = useState<RoomType[]>(rooms);
     const [newRoomCap, setNewRoomCap] = useState(false);
     const [editingRoom, setEditingRoom] = useState<RoomType | null>(null);
@@ -19,46 +22,72 @@ const FacilityRoomsModal: React.FC<FacilityRoomsModalProps> = ({
 
     // Function to add a new room
     const addRoom = async () => {
-        if (capability.trim()) {
-            const newRoom = {
-                clinic_id: facility.clinic_id,
-                exam_room_id: 0,
-                capability: capability.trim(),
-            };
-            const response = await fetch(`/api/rooms`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newRoom),
+        try {
+            if (capability.trim()) {
+                const newRoom = {
+                    clinic_id: facility.clinic_id,
+                    exam_room_id: 0,
+                    capability: capability.trim(),
+                };
+                const response = await fetch(`/api/rooms`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newRoom),
+                });
+                const result = await response.json();
+                newRoom.exam_room_id = Number(result.data)
+                setRoomList([...roomList, newRoom]);
+                setCapability("");
+                setNewRoomCap(false);
+                if (response.ok) {
+                    showNotification({
+                        message: 'Operation successful!',
+                        type: 'success'
+                    });
+                }
+            }
+        } catch (error) {
+            showNotification({
+                message: 'Operation failed',
+                type: 'error'
             });
-            const result = await response.json();
-            newRoom.exam_room_id = Number(result.data)
-            setRoomList([... roomList, newRoom]);
-            setCapability("");
-            setNewRoomCap(false);
         }
     };
 
     // Function to update room capabilities
     const addCapability = async () => {
-        if (editingRoom && capability.trim()) {
-            const updatedRooms = roomList.map((room) =>
-                room.exam_room_id === editingRoom.exam_room_id
-                    ? { ...room, capability: capability.trim() }
-                    : room
-            );
-            editingRoom.capability = capability.trim()
-            const response = await fetch(`/api/rooms`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(editingRoom),
+        try {
+            if (editingRoom && capability.trim()) {
+                const updatedRooms = roomList.map((room) =>
+                    room.exam_room_id === editingRoom.exam_room_id
+                        ? { ...room, capability: capability.trim() }
+                        : room
+                );
+                editingRoom.capability = capability.trim()
+                const response = await fetch(`/api/rooms`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(editingRoom),
+                });
+                setRoomList(updatedRooms);
+                setCapability("");
+                setEditingRoom(null);
+                if (response.ok) {
+                    showNotification({
+                        message: 'Operation successful!',
+                        type: 'success'
+                    });
+                }
+            }
+        } catch (error) {
+            showNotification({
+                message: 'Operation failed',
+                type: 'error'
             });
-            setRoomList(updatedRooms);
-            setCapability("");
-            setEditingRoom(null);
         }
     };
 

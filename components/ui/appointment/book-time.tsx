@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import { DoctorAvailabilityType, AppointmentType } from '@/lib/db';
+import { useNotification } from '@/components/ui/notificationContext';
 
 const specialties = [
     "",
@@ -20,7 +21,7 @@ export default function BookAppointment({
     pastAppointmentsInitial: AppointmentType[];
     futureAppointmentsInitial: AppointmentType[];
 }) {
-
+    const { showNotification } = useNotification();
     const { min, max, today } = getBookingDateRange();
     const [searchBy, setSearchBy] = useState("specialty");
     const [selectedValue, setSelectedValue] = useState("");
@@ -78,17 +79,21 @@ export default function BookAppointment({
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error('Booking failed');
+            if (response.ok) {
+                showNotification({
+                    message: 'Operation successful!',
+                    type: 'success'
+                });
             }
-
             const result = await response.json();
             console.log("book information:", JSON.stringify(result));
-            alert(`Appointment booked!`);
             window.location.reload();
         } catch (error) {
             console.error('Booking error:', error);
-            alert('Failed to book appointment. Please try again.');
+            showNotification({
+                message: 'Operation failed',
+                type: 'error'
+            });
         }
     };
 
@@ -104,17 +109,21 @@ export default function BookAppointment({
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error('Canceling failed');
+            if (response.ok) {
+                showNotification({
+                    message: 'Operation successful!',
+                    type: 'success'
+                });
             }
-
             const result = await response.json();
             console.log("book information:", JSON.stringify(result));
-            alert(`Appointment canceled!`);
             window.location.reload();
         } catch (error) {
             console.error('Canceling error:', error);
-            alert('Failed to cancel appointment. Please try again.');
+            showNotification({
+                message: 'Operation failed',
+                type: 'error'
+            });
         }
     };
 
