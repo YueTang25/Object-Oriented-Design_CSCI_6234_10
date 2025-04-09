@@ -29,6 +29,7 @@ import { User } from '../user';
 import { VercelLogo } from '@/components/icons';
 import Providers from '../providers';
 import { NavItem } from '../nav-item';
+import { NavItemMobile } from '../nav-item-mobile';
 import { SearchInput } from '../search';
 
 export default function DashboardLayout({
@@ -121,34 +122,18 @@ function MobileNav() {
             <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
             <span className="sr-only">Vercel</span>
           </Link>
-          <Link
-            href="/admin-dashboard"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-          >
-            <Home className="h-5 w-5" />
-            Dashboard
-          </Link>
-          <Link
-            href="/admin-dashboard/doctors"
-            className="flex items-center gap-4 px-2.5 text-foreground"
-          >
-            <Hospital className="h-5 w-5" />
-            Doctors
-          </Link>
-          <Link
-            href="/admin-dashboard/patients"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-          >
-            <Users2 className="h-5 w-5" />
-            Patients
-          </Link>
-          <Link
-            href="/admin-dashboard/facilities"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-          >
-            <Cable className="h-5 w-5" />
-            Facilties
-          </Link>
+          <NavItemMobile href="/admin-dashboard" label="Dashboard" >
+            <Home className="h-5 w-5" /> Dashboard
+          </NavItemMobile>
+          <NavItemMobile href="/admin-dashboard/doctors" label="Doctors">
+            <Hospital className="h-5 w-5" /> Doctors
+          </NavItemMobile>
+          <NavItemMobile href="/admin-dashboard/patients" label="Patients">
+            <Users2 className="h-5 w-5" /> Users
+          </NavItemMobile>
+          <NavItemMobile href="/admin-dashboard/facilities" label="Facilities">
+            <Cable className="h-5 w-5" /> Facilities
+          </NavItemMobile>
         </nav>
       </SheetContent>
     </Sheet>
