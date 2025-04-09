@@ -7,6 +7,15 @@ interface UserInfoModalProps {
     onClose: () => void;
 }
 
+const genders = [
+    "",
+    "Male",
+    "Female",
+    "Non-binary",
+    "Other",
+    "Prefer not to say",
+];
+
 const UserInfoModal: React.FC<UserInfoModalProps> = ({
     selectedUser,
     onClose,
@@ -29,7 +38,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
         const result = await response.json();
         console.log("edit information:", JSON.stringify(result));
         alert(`Update Successfully!`);
-        window.location.reload(); 
+        window.location.reload();
     };
 
     return (
@@ -50,6 +59,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
                             value={form.name}
                             onChange={(e) => setForm({ ...form, name: e.target.value })}
                             className="w-full px-3 py-2 border rounded"
+                            required
                         />
                     </div>
                     <div>
@@ -59,12 +69,13 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
                             value={form.email}
                             onChange={(e) => setForm({ ...form, email: e.target.value })}
                             className="w-full px-3 py-2 border rounded"
+                            required
                         />
                     </div>
                     <div>
                         <label className="block mb-1 mt-4 font-bold">Birth Day:</label>
                         <input
-                            type="text"
+                            type="date"
                             value={form.dob}
                             onChange={(e) => setForm({ ...form, dob: e.target.value })}
                             className="w-full px-3 py-2 border rounded"
@@ -72,12 +83,17 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({
                     </div>
                     <div>
                         <label className="block mb-1 mt-4 font-bold">Gender:</label>
-                        <input
-                            type="text"
+                        <select
                             value={form.gender}
                             onChange={(e) => setForm({ ...form, gender: e.target.value })}
                             className="w-full px-3 py-2 border rounded"
-                        />
+                        >
+                            {(genders).map((val) => (
+                                <option key={val} value={val}>
+                                    {val}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div>
                         <label className="block mb-1 mt-4 font-bold">Phone Number:</label>

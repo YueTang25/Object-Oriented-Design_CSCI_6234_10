@@ -26,7 +26,7 @@ export default function PatientList({
           </div>
         ))}
       </div>
-      <button className="mt-6 px-4 py-2 bg-black text-white rounded">Add New Patient</button>
+      <button className="mt-6 px-4 py-2 bg-black text-white rounded">Add New User</button>
 
       {/* Modal - Opens only when a user is selected */}
       {selectedUser && (

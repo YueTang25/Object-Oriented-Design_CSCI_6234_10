@@ -309,7 +309,7 @@ export async function getLicenses(doctor_id: number) {
 export async function getUsers() {
   try {
     const data = await db`
-      SELECT *
+      SELECT *, TO_CHAR(dob, 'YYYY-MM-DD') AS dob
       FROM users
       ORDER BY user_id;` as UserType[];
     return data;
