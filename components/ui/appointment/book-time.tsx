@@ -20,13 +20,15 @@ export default function BookAppointment({
     pastAppointmentsInitial: AppointmentType[];
     futureAppointmentsInitial: AppointmentType[];
 }) {
+
+    const { min, max, today } = getBookingDateRange();
     const [searchBy, setSearchBy] = useState("specialty");
     const [selectedValue, setSelectedValue] = useState("");
     const [date, setDate] = useState("");
     const [doctors, setDoctors] = useState<DoctorAvailabilityType[]>([]);
     const [pastAppointments, setPastAppointments] = useState<AppointmentType[]>(pastAppointmentsInitial);
     const [futureAppointments, setFutureAppointments] = useState<AppointmentType[]>(futureAppointmentsInitial);
-    console.log("page"+JSON.stringify(pastAppointments)+JSON.stringify(futureAppointments))
+    console.log("page" + JSON.stringify(pastAppointments) + JSON.stringify(futureAppointments))
 
     const handleSearch = async () => {
         if (searchBy && selectedValue) {
@@ -81,7 +83,7 @@ export default function BookAppointment({
             const result = await response.json();
             console.log("book information:", JSON.stringify(result));
             alert(`Appointment booked!`);
-            window.location.reload(); 
+            window.location.reload();
         } catch (error) {
             console.error('Booking error:', error);
             alert('Failed to book appointment. Please try again.');
@@ -107,7 +109,7 @@ export default function BookAppointment({
             const result = await response.json();
             console.log("book information:", JSON.stringify(result));
             alert(`Appointment canceled!`);
-            window.location.reload(); 
+            window.location.reload();
         } catch (error) {
             console.error('Canceling error:', error);
             alert('Failed to cancel appointment. Please try again.');
@@ -126,6 +128,8 @@ export default function BookAppointment({
                     onChange={(e) => setDate(e.target.value)}
                     className="px-4 py-2 border rounded"
                     placeholder="MM/DD/YY"
+                    min={min}
+                    max={max}
                 />
 
                 <span className="font-semibold">Search By</span>
@@ -199,11 +203,29 @@ export default function BookAppointment({
                                 No. {appointment.appointment_id} Date: {appointment.date} Start Time: {appointment.start_time}
                             </p>
                             <button className="px-4 py-2 bg-gray-300 text-black rounded"
-                            onClick={() => handleCancelAppointment(appointment)}>Cancel</button>
+                                onClick={() => handleCancelAppointment(appointment)}>Cancel</button>
                         </div>
                     </div>
                 ))}
             </div>
         </div>
     );
+}
+
+function getBookingDateRange() {
+    const today = new Date();
+
+    // Calculate end 
+    const end = new Date(today);
+    end.setDate(today.getDate() + 6);//patient can only book within a week
+    end.setHours(23, 59, 59, 999);
+
+    // Format as YYYY-MM-DD for input[type="date"]
+    const format = (date: Date) => date.toISOString().split('T')[0];
+
+    return {
+        min: format(today),
+        max: format(end),
+        today: format(today)
+    };
 }
