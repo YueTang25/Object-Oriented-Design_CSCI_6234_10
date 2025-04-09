@@ -62,7 +62,7 @@ export default function AvailabilityScheduler({ initialData }: { initialData: Av
             onChange={(e) => setForm({ ...form, start_time: e.target.value })}
           >
             <option value="">Start Time</option>
-            {generateTimeOptions().map((time) => (
+            {generateTimeOptions("start_time", form.end_time).map((time) => (
               <option key={time} value={time}>
                 {time}
               </option>
@@ -76,7 +76,7 @@ export default function AvailabilityScheduler({ initialData }: { initialData: Av
             onChange={(e) => setForm({ ...form, end_time: e.target.value })}
           >
             <option value="">End Time</option>
-            {generateTimeOptions().map((time) => (
+            {generateTimeOptions("end_time", form.start_time).map((time) => (
               <option key={time} value={time}>
                 {time}
               </option>
@@ -96,6 +96,7 @@ export default function AvailabilityScheduler({ initialData }: { initialData: Av
               {availability.map((slot, index) =>
                 slot.day === day ? (
                   <div key={index} className="bg-green-100 p-3 rounded mb-2">
+                    <div className="text-sm font-bold">{getNextWeekDate(day)}</div>
                     <div className="text-sm font-medium">AVAILABLE</div>
                     <div className="text-sm">FROM {slot.start_time}</div>
                     <div className="text-sm">TO {slot.end_time}</div>
@@ -116,15 +117,40 @@ export default function AvailabilityScheduler({ initialData }: { initialData: Av
   );
 }
 
-// Helper: Generates time options in 30-minute intervals
-function generateTimeOptions() {
+// Helper: Generates time options in 30-minute intervals 
+// Doctor working time 10:00-16:00
+function generateTimeOptions(createdTimeType: string, time: string) {
+  let startTime = "10:00:00";
+  let endTime = "16:00:00";
+  if (createdTimeType == "start_time" && time != "") {
+    endTime = time
+  } else if (createdTimeType == "end_time" && time != "") {
+    startTime = time
+  }
   const times: string[] = [];
-  for (let h = 0; h < 24; h++) {
-    for (let m = 0; m < 60; m += 30) {
-      const hour = h.toString().padStart(2, '0');
-      const minute = m.toString().padStart(2, '0');
-      times.push(`${hour}:${minute}:00`);
-    }
+
+  // Parse the start time
+  const [startHour, startMinute, startSecond] = startTime.split(':').map(Number);
+
+  // Parse the end time
+  const [endHour, endMinute, endSecond] = endTime.split(':').map(Number);
+  // Calculate start time in minutes since midnight
+  let currentMinutes = startHour * 60 + startMinute;
+  const endMinutes = endHour * 60 + endMinute; // 16:00 in minutes
+  // Generate times in 30-minute increments until 16:00
+  while (currentMinutes <= endMinutes) {
+    const hours = Math.floor(currentMinutes / 60);
+    const minutes = currentMinutes % 60;
+
+    const hourStr = hours.toString().padStart(2, '0');
+    const minuteStr = minutes.toString().padStart(2, '0');
+
+    times.push(`${hourStr}:${minuteStr}:00`);
+
+    currentMinutes += 30; // Increment by 30 minutes
+  }
+  if (createdTimeType == "end_time") {
+    times.shift() //end_time!=start_time
   }
   return times;
 }
