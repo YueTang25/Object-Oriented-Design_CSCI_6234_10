@@ -19,6 +19,16 @@ export default function LookAppointment({
             {/* Appointments */}
             <h2 className="text-xl font-semibold mb-4">Today</h2>
             <div className="space-y-4">
+                {todayAppointments.length === 0 && (
+                    <div className="border p-4 rounded-md shadow-sm">
+                        <div className="bg-white p-4 rounded shadow">
+                            <h3 className="text-lg font-bold mb-2">No Appointment</h3>
+                            <p className="text-sm text-gray-600">
+
+                            </p>
+                        </div>
+                    </div>
+                )}
                 {todayAppointments.map((appointment, index) => (
                     <div key={appointment.appointment_id | index} className="border p-4 rounded-md shadow-sm">
                         <div className="bg-white p-4 rounded shadow">
@@ -30,8 +40,18 @@ export default function LookAppointment({
                     </div>
                 ))}
             </div>
-            <h2 className="text-xl font-semibold mb-4">Future</h2>
+            <h2 className="text-xl font-semibold mb-4 mt-6">Future</h2>
             <div className="space-y-4">
+                {futureAppointments.length === 0 && (
+                    <div className="border p-4 rounded-md shadow-sm">
+                        <div className="bg-white p-4 rounded shadow">
+                            <h3 className="text-lg font-bold mb-2">No Appointment</h3>
+                            <p className="text-sm text-gray-600">
+
+                            </p>
+                        </div>
+                    </div>
+                )}
                 {futureAppointments.map((appointment, index) => (
                     <div key={appointment.appointment_id | index} className="border p-4 rounded-md shadow-sm">
                         <div className="bg-white p-4 rounded shadow">
