@@ -28,6 +28,7 @@ import { User } from '../user';
 import { VercelLogo } from '@/components/icons';
 import Providers from '../providers';
 import { NavItem } from '../nav-item';
+import { NavItemMobile } from '../nav-item-mobile';
 import { SearchInput } from '../search';
 
 export default function DashboardLayout({
@@ -116,27 +117,15 @@ function MobileNav() {
             <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
             <span className="sr-only">Vercel</span>
           </Link>
-          <Link
-            href="/doctor-dashboard"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-          >
-            <Home className="h-5 w-5" />
-            Dashboard
-          </Link>
-          <Link
-            href="/doctor-dashboard/schedule"
-            className="flex items-center gap-4 px-2.5 text-foreground"
-          >
-            <BookUser className="h-5 w-5" />
-            Schedule
-          </Link>
-          <Link
-            href="/doctor-dashboard/availability"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-          >
-            <CalendarPlus2 className="h-5 w-5" />
-            Availability
-          </Link>
+          <NavItemMobile href="/doctor-dashboard" label="Dashboard" >
+            <Home className="h-5 w-5" /> Dashboard
+          </NavItemMobile>
+          <NavItemMobile href="/doctor-dashboard/schedule" label="Schedule">
+            <BookUser className="h-5 w-5" /> Schedule
+          </NavItemMobile>
+          <NavItemMobile href="/doctor-dashboard/availability" label="Availability">
+            <CalendarPlus2 className="h-5 w-5" /> Availability
+          </NavItemMobile>
         </nav>
       </SheetContent>
     </Sheet>

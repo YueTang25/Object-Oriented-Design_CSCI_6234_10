@@ -28,6 +28,7 @@ import { User } from '../user';
 import { VercelLogo } from '@/components/icons';
 import Providers from '../providers';
 import { NavItem } from '../nav-item';
+import { NavItemMobile } from '../nav-item-mobile';
 import { SearchInput } from '../search';
 
 export default function DashboardLayout({
@@ -116,20 +117,12 @@ function MobileNav() {
             <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
             <span className="sr-only">Vercel</span>
           </Link>
-          <Link
-            href="/patient-dashboard"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-          >
-            <Home className="h-5 w-5" />
-            Dashboard
-          </Link>
-          <Link
-            href="/patient-dashboard/appointment"
-            className="flex items-center gap-4 px-2.5 text-foreground"
-          >
-            <Plus className="h-5 w-5" />
-            Appointment
-          </Link>
+          <NavItemMobile href="/patient-dashboard" label="Dashboard" >
+            <Home className="h-5 w-5" /> Dashboard
+          </NavItemMobile>
+          <NavItemMobile href="/patient-dashboard/appointment" label="Appointment" >
+            <Plus className="h-5 w-5" /> Appointment
+          </NavItemMobile>
           {/* <Link
             href="/patient-dashboard/payment"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
